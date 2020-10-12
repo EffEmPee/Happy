@@ -43,6 +43,31 @@
   z-index: 5;
 }
 
+#page-map .theme-switch, #page-map .theme-switch:focus{
+  position: absolute;
+  right: 40px;
+  top: 40px;
+
+  z-index: 10;
+
+  width: 64px;
+  height: 64px;
+  background: #15c3d6;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  transition: background-color 0.2s;
+}
+
+#page-map .theme-switch:hover {
+  background: #17d6eb;
+}
+
 #page-map .create-orphanage {
   position: absolute;
   right: 40px;
