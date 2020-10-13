@@ -16,7 +16,7 @@ function OrphanagesMap() {
     const moon = document.getElementById('moon')
     const sun = document.getElementById('sun')
 
-    if(theme == 'light-v10'){
+    if(theme === 'light-v10'){
       setTheme('dark-v10')
 
       moon?.setAttribute('display', 'none')
