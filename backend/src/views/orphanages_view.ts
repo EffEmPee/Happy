@@ -6,13 +6,14 @@ export default {
     return {
       id: orphanage.id,
       name: orphanage.name,
-      Latitude: orphanage.latitude,
+      latitude: orphanage.latitude,
       longitude: orphanage.longitude,
       about: orphanage.about,
       instructions: orphanage.instructions,
       opening_hours: orphanage.opening_hours,
       open_on_weekends: orphanage.open_on_weekends,
-      images: imagesView.renderMany(orphanage.images)
+      images: imagesView.renderMany(orphanage.images),
+      whatsapp: orphanage.whatsapp,
     };
   },
 

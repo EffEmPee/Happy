@@ -37,7 +37,8 @@ export default {
       about,
       instructions,
       opening_hours,
-      open_on_weekends 
+      open_on_weekends,
+      whatsapp
     } = request.body
   
   
@@ -56,7 +57,8 @@ export default {
       about,
       instructions,
       opening_hours,
-      open_on_weekends,
+      open_on_weekends: open_on_weekends === 'true',
+      whatsapp,
       images,
     };
 
@@ -68,6 +70,7 @@ export default {
       instructions: Yup.string().required(),
       opening_hours: Yup.string().required(),
       open_on_weekends: Yup.boolean().required(),
+      whatsapp: Yup.string().required(),
       images: Yup.array(
         Yup.object().shape({
           path: Yup.string().required()
@@ -84,5 +87,42 @@ export default {
     await oprhanagesRepository.save(orphanage);
   
     return response.status(201).json(orphanage)
-  }
+  },
+
+  async update(request: Request, response: Response) {
+    const {
+        name,
+        latitude,
+        longitude,
+        about,
+        instructions,
+        opening_hours,
+        open_on_weekends
+    } = request.body;
+    const { id } = request.params
+
+    const orphanagesRepository = getRepository(Orphanage);
+
+    await orphanagesRepository.update(id,{
+        name,
+        latitude,
+        longitude,
+        about,
+        instructions,
+        opening_hours,
+        open_on_weekends : open_on_weekends === 'true'
+    })
+
+    return response.status(201).json()
+  },
+
+  async delete(request: Request, response: Response) {
+    const { id } = request.params;
+
+    const orphanagesRepository = getRepository(Orphanage);
+
+    await orphanagesRepository.delete(id)
+
+    return response.status(201).json();
+}
 }

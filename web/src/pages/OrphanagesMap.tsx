@@ -1,15 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FiPlus, FiSun, FiMoon } from 'react-icons/fi'
-import { Map, TileLayer } from 'react-leaflet';
-
-import 'leaflet/dist/leaflet.css'
+import { FiPlus, FiSun, FiMoon, FiArrowRight } from 'react-icons/fi'
+import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
 
 import mapMarkerImg from '../images/map-marker.svg';
+import mapIcon from '../utils/mapIcon';
 
-import '../styles/pages/orphanages-map.css'
+import '../styles/pages/orphanages-map.css';
+import api from '../services/api';
+
+interface Orphanage {
+  id: number;
+  latitude: number;
+  longitude: number;
+  name: string;
+}
 
 function OrphanagesMap() {
+  const [orphanages, setOrphanages] = useState<Orphanage[]>([])
+
+  useEffect(() => {
+    api.get('orphanages').then(response => {
+      setOrphanages(response.data);
+    });
+  }, []);
+
   const [theme, setTheme] = useState('light-v10');
 
   function switchMapTheme() {
@@ -54,6 +69,23 @@ function OrphanagesMap() {
           // url="https://a.tile.openstreetmap.org/{z}/{x}/{y}.png"
           url={`https://api.mapbox.com/styles/v1/mapbox/${theme}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`}
         />
+
+        {orphanages.map(orphanage => {
+          return (
+            <Marker
+              key={orphanage.id}  
+              icon={mapIcon}
+              position={[orphanage.latitude,orphanage.longitude]}
+            >
+              <Popup closeButton={false} minWidth={240} maxwidth={240} className="map-popup">
+                {orphanage.name}
+                <Link to={`/orphanages/${orphanage.id}`}>
+                  <FiArrowRight size={20} color="#FFF" />
+                </Link>
+              </Popup>
+            </Marker>
+          )
+        })}
       </Map>
 
       <button className="theme-switch" onClick={() => switchMapTheme()}>
@@ -61,7 +93,7 @@ function OrphanagesMap() {
         <FiSun id="sun" size={32} color="#fff" display="none" />
       </button>
 
-      <Link to="" className="create-orphanage">
+      <Link to="/orphanages/create" className="create-orphanage">
         <FiPlus size={32} color="#fff" />
       </Link>
 
