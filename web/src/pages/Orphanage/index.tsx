@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaWhatsapp } from "react-icons/fa";
 import { FiClock, FiInfo } from "react-icons/fi";
 import { Map, Marker, TileLayer } from "react-leaflet";
 import { useParams } from 'react-router-dom';
 
-import Sidebar from "../components/Sidebar";
-import mapIcon from "../utils/mapIcon";
-import api from "../services/api";
+import Sidebar from "../../components/Sidebar/index";
+import mapIcon from "../../utils/mapIcon";
+import api from "../../services/api";
 
-import '../styles/pages/orphanage.css';
+import { ContactButton, Images, MapContainer, OpenDetails, OrphanagDetailsContent, OrphanageDetails, PageOrphanage } from './style';
+import { ThemeContext } from "styled-components";
 
 interface Orphanage {
   latitude: number;
@@ -29,11 +30,12 @@ interface OrphanageParams {
   id: string;
 }
 
-export default function Orphanage() {
+const Orphanage: React.FC = () => {
   const params = useParams<OrphanageParams>();
   const [orphanage, setOrphanage] = useState<Orphanage>()
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
+  const { title } = useContext(ThemeContext);
 
   useEffect(() => {
     api.get(`orphanages/${params.id}`).then(response => {
@@ -48,14 +50,14 @@ export default function Orphanage() {
   }
 
   return (
-    <div id="page-orphanage">
+    <PageOrphanage>
       <Sidebar />
 
       <main>
-        <div className="orphanage-details">
+        <OrphanageDetails>
           <img src={orphanage.images[activeImageIndex].url} alt={orphanage.name} />
 
-          <div className="images">
+          <Images>
               {orphanage.images.map((image, index) => {
                 return (
                   <button 
@@ -70,15 +72,15 @@ export default function Orphanage() {
                   </button>
                 );
               })}
-          </div>
+          </Images>
           
-          <div className="orphanage-details-content">
+          <OrphanagDetailsContent>
             <h1>{orphanage.name}</h1>
             <p>
               {orphanage.about}
             </p>
 
-            <div className="map-container">
+            <MapContainer>
               <Map 
                 center={[orphanage.latitude, orphanage.longitude]} 
                 zoom={16} 
@@ -90,7 +92,7 @@ export default function Orphanage() {
                 doubleClickZoom={false}
               >
                 <TileLayer 
-                  url={`https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`}
+                  url={`https://api.mapbox.com/styles/v1/mapbox/${title}-v10/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`}
                 />
                 <Marker interactive={false} icon={mapIcon} position={[orphanage.latitude, orphanage.longitude]} />
               </Map>
@@ -100,7 +102,7 @@ export default function Orphanage() {
                   Ver rotas no Google Maps
                 </a>
               </footer>
-            </div>
+            </MapContainer>
 
             <hr />
 
@@ -109,7 +111,7 @@ export default function Orphanage() {
               {orphanage.instructions}
             </p>
 
-            <div className="open-details">
+            <OpenDetails>
               <div className="hour">
                 <FiClock size={32} color="#15B6D6" />
                 Segunda à Sexta <br />
@@ -128,17 +130,19 @@ export default function Orphanage() {
                   fim de semana
                 </div>
               ) }
-            </div>
+            </OpenDetails>
 
-              <button type="button" className="contact-button">
+              <ContactButton type="button">
                 <a href={`https://wa.me/${orphanage.whatsapp}`} target='_blank' rel="noopener noreferrer">
                   <FaWhatsapp size={20} color="#FFF" />
                   Entrar em contato
                 </a>
-              </button> 
-          </div>
-        </div>
+              </ContactButton> 
+          </OrphanagDetailsContent>
+        </OrphanageDetails>
       </main>
-    </div>
+    </PageOrphanage>
   );
 }
+
+export default Orphanage;

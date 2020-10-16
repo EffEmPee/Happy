@@ -1,17 +1,18 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { ChangeEvent, FormEvent, useContext, useState } from "react";
 import { Map, Marker, TileLayer } from 'react-leaflet';
 import { LeafletMouseEvent } from 'leaflet';
 
 import { FiPlus } from "react-icons/fi";
 
+import { PageCreateOrphanage, CreateOrphanageForm, InputBlock, ConfirmButton, NewImages, ImagesContainer, ButtonSelect } from './style';
 
-import '../styles/pages/create-orphanage.css';
-import Sidebar from "../components/Sidebar";
-import mapIcon from "../utils/mapIcon";
-import api from "../services/api";
+import Sidebar from "../../components/Sidebar/index";
+import mapIcon from "../../utils/mapIcon";
+import api from "../../services/api";
 import { useHistory } from "react-router-dom";
+import { ThemeContext } from "styled-components";
 
-export default function CreateOrphanage() {
+const CreateOrphanage: React.FC = () => {
   const history = useHistory();
 
   const [position, setPosition] = useState({ latitude:0, longitude: 0 });
@@ -25,6 +26,7 @@ export default function CreateOrphanage() {
   const [images, setImages] = useState<File[]>([]);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   
+  const { title } = useContext(ThemeContext);
 
   function handleMapClick(event: LeafletMouseEvent) {
     const { lat, lng } = event.latlng;
@@ -83,11 +85,11 @@ export default function CreateOrphanage() {
   }
 
   return (
-    <div id="page-create-orphanage">
+    <PageCreateOrphanage>
       <Sidebar />
 
       <main>
-        <form onSubmit={handleSubmit} className="create-orphanage-form">
+        <CreateOrphanageForm onSubmit={handleSubmit}>
           <fieldset>
             <legend>Dados</legend>
 
@@ -98,7 +100,7 @@ export default function CreateOrphanage() {
               onClick={handleMapClick}
             >
               <TileLayer 
-                url={`https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`}
+                url={`https://api.mapbox.com/styles/v1/mapbox/${title}-v10/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`}
               />
 
               { position.latitude !== 0 && (
@@ -113,73 +115,73 @@ export default function CreateOrphanage() {
               )}
             </Map>
 
-            <div className="input-block">
+            <InputBlock>
               <label htmlFor="name">Nome</label>
               <input
                 id="name" 
                 value={name} 
                 onChange={e => setName(e.target.value)} />
-            </div>
+            </InputBlock>
 
-            <div className="input-block">
+            <InputBlock>
               <label htmlFor="about">Sobre <span>Máximo de 300 caracteres</span></label>
               <textarea 
                 id="name" 
                 maxLength={300}
                 value={about} 
                 onChange={e => setAbout(e.target.value)} />
-            </div>
+            </InputBlock>
 
-            <div className="input-block">
+            <InputBlock>
               <label htmlFor="images">Fotos</label>
 
-              <div className="images-container">
+              <ImagesContainer>
                 {previewImages.map(image => {
                   return (
                     <img key={image} src={image} alt={image} />
                   )
                 })}
                   
-                <label htmlFor="image[]" className="new-image">
+                <NewImages htmlFor="image[]">
                   <FiPlus size={24} color="#15b6d6" />
-                </label>
-              </div>
+                </NewImages>
+              </ImagesContainer>
 
               <input multiple onChange={handleSelectImages} type="file" id="image[]" />
-            </div>
+            </InputBlock>
           </fieldset>
 
           <fieldset>
             <legend>Visitação</legend>
 
-            <div className="input-block">
+            <InputBlock>
               <label htmlFor="instructions">Instruções</label>
               <textarea 
                 id="instructions"
                 value={instructions} 
                 onChange={e => setInstructions(e.target.value)}/>
-            </div>
+            </InputBlock>
 
-            <div className="input-block">
+            <InputBlock>
               <label htmlFor="opening_hours">Horário de funcionamento</label>
               <input
                 id="opening_hours"
                 value={opening_hours} 
                 onChange={e => setOpeningHours(e.target.value)} />
-            </div>
+            </InputBlock>
 
-            <div className="input-block">
-              <label htmlFor="whatsapp">Número de contato</label>
+            <InputBlock>
+              <label htmlFor="whatsapp">Número de contato (WhatsApp)</label>
               <input
                 id="whatsapp"
                 value={whatsapp} 
                 onChange={e => setWhatsapp(e.target.value)} />
-            </div>
+            </InputBlock>
 
-            <div className="input-block">
+            <InputBlock>
               <label htmlFor="open_on_weekends">Atende fim de semana</label>
 
-              <div className="button-select">
+              <ButtonSelect>
                 <button 
                   type="button" 
                   className={open_on_weekends ? 'active' : ''}
@@ -194,17 +196,19 @@ export default function CreateOrphanage() {
                 >
                   Não
                 </button>
-              </div>
-            </div>
+              </ButtonSelect>
+            </InputBlock>
           </fieldset>
 
-          <button className="confirm-button" type="submit">
+          <ConfirmButton type="submit">
             Confirmar
-          </button>
-        </form>
+          </ConfirmButton>
+        </CreateOrphanageForm>
       </main>
-    </div>
+    </PageCreateOrphanage>
   );
 }
+
+export default CreateOrphanage;
 
 // return `https://a.tile.openstreetmap.org/${z}/${x}/${y}.png`;
