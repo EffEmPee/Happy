@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { FiPlus, FiSun, FiMoon, FiArrowRight } from 'react-icons/fi'
+import { FiPlus, FiArrowRight } from 'react-icons/fi'
 import { Map, TileLayer, Marker} from 'react-leaflet';
 
 import mapMarkerImg from '../../images/map-marker.svg';

@@ -95,42 +95,58 @@ export const ImagesContainer = styled.div`
     grid-template-columns: repeat(5, 1fr);
     grid-gap: 16px;
 
+  div {
+    position: relative;
+  }
+  div button {
+    width: 100%;
+    height: 96px;
+    border: 2px dotted #A4031F;
+    border-radius: 20px;
+    cursor: pointer;
+    background: none;
+    opacity: 0;
+    transition: .2s;
+
+    position: absolute;
+    z-index: 10;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  div button:hover {
+    opacity: 1;
+  }
+
   img {
     width: 100%;
     height: 96px;
     object-fit: cover;
     border-radius: 20px;
+
+    transition: .2s;
   }
 
-  div {
-    position: relative;
+
+  div button:hover+img{
+    opacity: 0.3;
   }
-  div button {
-    width: 40px;
-    height: 40px;
-    background: #fff;
-    border-radius: 0 20px 0 20px;
-    border: 2px solid #D3E1E5;
-    position: absolute;
-    right: 0;
-    top: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
+
+
 `;
 
 export const NewImages = styled.label`
-    height: 96px;
-    background: ${props => props.theme.colors.shapes2};
-    border: 1px dashed ${props => props.theme.colors.primary};
-    border-radius: 20px;
-    cursor: pointer;
+  height: 95px;
+  background: ${props => props.theme.colors.shapes2};
+  border: 1px dashed ${props => props.theme.colors.primary};
+  border-radius: 20px;
+  cursor: pointer;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const ButtonSelect = styled.div`
@@ -162,6 +178,7 @@ export const ButtonSelect = styled.div`
 }
 
 `;
+
 
 export const ConfirmButton = styled.button`
   margin-top: 64px;

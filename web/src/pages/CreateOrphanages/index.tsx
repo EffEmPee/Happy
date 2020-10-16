@@ -2,7 +2,7 @@ import React, { ChangeEvent, FormEvent, useContext, useState } from "react";
 import { Map, Marker, TileLayer } from 'react-leaflet';
 import { LeafletMouseEvent } from 'leaflet';
 
-import { FiPlus } from "react-icons/fi";
+import { FiPlus, FiX } from "react-icons/fi";
 
 import { PageCreateOrphanage, CreateOrphanageForm, InputBlock, ConfirmButton, NewImages, ImagesContainer, ButtonSelect } from './style';
 
@@ -47,7 +47,6 @@ const CreateOrphanage: React.FC = () => {
     selectedImages.push(...Array.from(event.target.files));
     
     setImages(selectedImages);
-    console.log(images);
 
     const selectedImagesPreview = selectedImages.map(image => {
       console.log(image);
@@ -55,6 +54,21 @@ const CreateOrphanage: React.FC = () => {
     });
     
     setPreviewImages(selectedImagesPreview);
+    console.log(previewImages);
+  }
+
+  function handleDeleteImages(index: number) {
+    const deletedImagesPreview = previewImages.filter(
+      (image, compareIndex) => index !== compareIndex,
+    );
+
+    setPreviewImages(deletedImagesPreview);
+
+    const deletedImages = images.filter(
+      (image, compareIndex) => index !== compareIndex,
+    );
+
+    setImages(deletedImages);
   }
 
   async function handleSubmit(event: FormEvent) {
@@ -136,9 +150,15 @@ const CreateOrphanage: React.FC = () => {
               <label htmlFor="images">Fotos</label>
 
               <ImagesContainer>
-                {previewImages.map(image => {
+                {previewImages.map((image, index) => {
                   return (
-                    <img key={image} src={image} alt={image} />
+                    <div key={image}>
+                      <button onClick={() => handleDeleteImages(index)}>
+                        <FiX size={24} color="#A4031F" />
+                      </button>
+
+                      <img src={image} alt={image} />
+                    </div>
                   )
                 })}
                   
